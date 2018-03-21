@@ -1,0 +1,64 @@
+#include <iostream>
+
+class Vector {
+private:
+    int* a;
+    size_t cnt;
+    size_t full;
+
+public:
+    Vector(): cnt(0), full(0) {
+        a = new int[0];
+    }
+    Vector(Vector& other): cnt(other.cnt), full(other.full) {
+        delete[] a;
+        int* r = new int[other.cnt];
+        for (size_t i = 0; i < other.full; ++i)
+            r[i] = other[i];
+        a = r;
+        r = nullptr;
+    }
+    void resize_cnt() {
+        if (cnt == 0) {
+            delete [] a;
+            a = new int[1];
+            cnt = 1;
+            return;
+        }
+        int* r = new int[cnt * 2];
+        for (size_t i = 0; i < full; ++i)
+            r[i] = a[i];
+        delete[] a;
+        a = r;
+        cnt *= 2;
+        r = nullptr;
+    }
+    size_t size() const {
+        return full;
+    }
+    void push_back(int x) {
+        if (full >= cnt) {
+            resize_cnt();
+        }
+        a[full] = x;
+        ++full;
+    }
+    void pop_back() {
+        full--;
+    }
+    Vector& operator = (Vector& other) {
+        delete[] a;
+        int* r = new int[other.cnt];
+        for (size_t i = 0; i < other.full; ++i)
+            r[i] = other[i];
+        a = r;
+        r = nullptr;
+        return *this;
+    }
+    int operator[](size_t x) {
+        return a[x];
+    }
+    ~Vector() {
+        delete [] a;
+    }
+};
